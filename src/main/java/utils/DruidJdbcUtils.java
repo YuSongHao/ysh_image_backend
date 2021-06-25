@@ -6,12 +6,8 @@ import org.apache.commons.logging.LogFactory;
 import pojo.Image;
 
 import javax.sql.DataSource;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,7 +48,7 @@ public class DruidJdbcUtils {
         return null;
     }
 
-    public static <T> int insert(Image image) {
+    public static int insert(Image image) {
         Connection connection = getConnection();
         String sql = "insert into ysh_image_tb(image_name, image_group, upload_date, image) values(?,?,?,?)";
         PreparedStatement ps = null;
@@ -71,21 +67,6 @@ public class DruidJdbcUtils {
         return 0;
     }
 
-    public static void main(String[] args) {
-        Image image = new Image("ysh02", "ysh",
-                "C:\\Users\\user\\Desktop\\简历2寸蓝底.jpg");
-        DruidJdbcUtils.insert(image);
-//        Image image = DruidJdbcUtils.selectByName("ysh02");
-//        String imagePath = "C:\\Users\\user\\Desktop\\image.jpg";
-//        try (FileOutputStream fos = new FileOutputStream(imagePath)) {
-//            fos.write(image.getImageByteArray());
-//        } catch (IOException e) {
-//            LOG.error(e.getMessage(), e);
-//        }
-//        DruidJdbcUtils.delete("ysh02");
-//        DruidJdbcUtils.delete("ysh01");
-    }
-
     public static int delete(String name) {
         Connection connection = getConnection();
         String sql = "delete from ysh_image_tb where image_name=\"" + name + "\" ";
@@ -102,7 +83,10 @@ public class DruidJdbcUtils {
         return 0;
     }
 
-//    public static Image update(String name, Object newObj) {}
+    public static int update(String name, Image image) {
+        delete(name);
+        return insert(image);
+    }
 
     public static Image selectByName(String name){
         Connection connection = getConnection();
