@@ -16,22 +16,18 @@ public class ImageDaoImpl implements ImageDao{
     }
 
     @Override public int delete(String name) {
-//        return DruidJdbcUtils.delete(name);
-        return 0;
+        return DruidJdbcUtils.delete(name);
     }
 
     @Override public int update(String name, Image newImage) {
-//        return DruidJdbcUtils.update(name, newImage);
-        return 0;
+        return DruidJdbcUtils.update(name, newImage);
     }
 
     @Override public Image selectByName(String name) {
-//        return DruidJdbcUtils.selectByName(name);
-        return null;
+        return DruidJdbcUtils.selectByName(name);
     }
 
     @Override public List<Image> selectByGroup(String group) {
-//        return DruidJdbcUtils.selectByGroup(group);
-        return null;
+        return DruidJdbcUtils.selectByGroup(group);
     }
 }
