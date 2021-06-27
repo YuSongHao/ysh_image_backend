@@ -67,6 +67,26 @@ public class DruidJdbcUtils {
         return 0;
     }
 
+    public static int insertAndEncrypt(Image image){
+        Connection connection = getConnection();
+        String sql = "insert into ysh_image_tb(image_name, image_group, upload_date, image,encrypted) values(?,?,?,?,?)";
+        PreparedStatement ps = null;
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setString(1,image.getImageName());
+            ps.setString(2, image.getImageGroup());
+            ps.setDate(3,image.getDate());
+            ps.setBytes(4,EncryptUtils.encryptOrDecryptByXor(image.getImageByteArray()));
+            ps.setString(5,"true");
+            return ps.executeUpdate();
+        } catch (Throwable t){
+            LOG.error(t.getMessage(), t);
+        } finally {
+            DruidJdbcUtils.close(connection, ps, null);
+        }
+        return 0;
+    }
+
     public static int delete(String name) {
         Connection connection = getConnection();
         String sql = "delete from ysh_image_tb where image_name=\"" + name + "\" ";
@@ -90,6 +110,7 @@ public class DruidJdbcUtils {
 
     public static Image selectByName(String name){
         Connection connection = getConnection();
+        name = MysqlQueryUtils.formatPathname(name);
         String sql = "select * from ysh_image_tb where image_name=\"" + name + "\"";
         LOG.info(sql);
         PreparedStatement ps = null;
@@ -99,7 +120,11 @@ public class DruidJdbcUtils {
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
             if (rs.next()){
-                result = new Image(rs.getString(2),rs.getString(3),rs.getDate(4),rs.getBytes(5));
+                if (rs.getString(5).equals("true")){
+                    result = new Image(rs.getString(2),rs.getString(3),rs.getDate(4),EncryptUtils.encryptOrDecryptByXor(rs.getBytes(5)));
+                } else{
+                    result = new Image(rs.getString(2),rs.getString(3),rs.getDate(4),rs.getBytes(5));
+                }
             }
         } catch (Throwable t){
             LOG.error(t.getMessage(), t);
@@ -111,6 +136,7 @@ public class DruidJdbcUtils {
 
     public static List<Image> selectByGroup(String group){
         Connection connection = getConnection();
+        group = MysqlQueryUtils.formatPathname(group);
         String sql = "select * from ysh_image_tb where image_group=\"" + group + "\"";
         LOG.info(sql);
         PreparedStatement ps = null;
@@ -121,7 +147,11 @@ public class DruidJdbcUtils {
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()){
-                result.add(new Image(rs.getString(2),rs.getString(3),rs.getDate(4), rs.getBytes(5)));
+                if (rs.getString(5).equals("true")){
+                    result.add(new Image(rs.getString(2),rs.getString(3),rs.getDate(4), EncryptUtils.encryptOrDecryptByXor(rs.getBytes(5))));
+                } else{
+                    result.add(new Image(rs.getString(2),rs.getString(3),rs.getDate(4), rs.getBytes(5)));
+                }
             }
         } catch (Throwable t){
             LOG.error(t.getMessage(), t);
@@ -155,6 +185,17 @@ public class DruidJdbcUtils {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public static void showTable(String groupName){
+        List<Image> list = selectByGroup(groupName);
+        try {
+            for (int i = 0; i < list.size(); i++) {
+                LOG.info(list.get(i).toString());
+            }
+        } catch (Throwable t) {
+            LOG.error(t.getMessage(), t);
         }
     }
 }

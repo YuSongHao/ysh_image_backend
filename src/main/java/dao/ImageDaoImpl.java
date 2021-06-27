@@ -11,23 +11,33 @@ import java.util.List;
  * @create : 2021-06-24
  */
 public class ImageDaoImpl implements ImageDao{
-    @Override public int insert(Image image) {
+    @Override
+    public int insert(Image image) {
         return DruidJdbcUtils.insert(image);
     }
 
-    @Override public int delete(String name) {
+    @Override
+    public int delete(String name) {
         return DruidJdbcUtils.delete(name);
     }
 
-    @Override public int update(String name, Image newImage) {
+    @Override
+    public int update(String name, Image newImage) {
         return DruidJdbcUtils.update(name, newImage);
     }
 
-    @Override public Image selectByName(String name) {
+    @Override
+    public Image selectByName(String name) {
         return DruidJdbcUtils.selectByName(name);
     }
 
-    @Override public List<Image> selectByGroup(String group) {
+    @Override
+    public List<Image> selectByGroup(String group) {
         return DruidJdbcUtils.selectByGroup(group);
+    }
+
+    @Override
+    public int insertAndEncrypt(Image image) {
+        return DruidJdbcUtils.insertAndEncrypt(image);
     }
 }

@@ -8,6 +8,8 @@ public interface ImageDao {
 
     public int insert(Image image);
 
+    public int insertAndEncrypt(Image image);
+
     public int delete(String name);
 
     public int update(String name, Image newImage);
