@@ -1,9 +1,6 @@
 package pojo;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.sql.Date;
 import java.util.Arrays;
@@ -30,8 +27,8 @@ public class Image {
         this.imageByteArray = imageByteArray;
     }
 
-    public Image(String imageName, String imageGroup, String imagePath){
-        this.imageName = imageName;
+    public Image(String imageGroup, String imagePath){
+        this.imageName = imagePath;
         this.imageGroup = imageGroup;
         this.date = new Date(System.currentTimeMillis());
 

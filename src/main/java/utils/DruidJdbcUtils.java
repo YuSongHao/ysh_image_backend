@@ -117,10 +117,11 @@ public class DruidJdbcUtils {
         ResultSet rs = null;
         List<Image> result = new LinkedList<>();
         try {
+            assert connection != null;
             ps = connection.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()){
-                result.add(new Image(rs.getString(2),rs.getString(3),rs.getDate(4),rs.getBytes(5)));
+                result.add(new Image(rs.getString(2),rs.getString(3),rs.getDate(4), rs.getBytes(5)));
             }
         } catch (Throwable t){
             LOG.error(t.getMessage(), t);
